@@ -3,25 +3,26 @@
 #include <algorithm>
 #include <iostream>
 
-Character::Character(bool determine, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus = 0, int cStr, int cDex, int cCon, int cWis, int cChar)
+Character::Character(bool determine, std::string cName, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus = 0, int cStr, int cDex, int cCon, int cWis, int cChar)
 {
-		LVL = cLVL;
-		SetHP(determine, cHP);
-		SetAC(determine, cAC);
-		healthD_Type = cHealthD;
-		damageD_TypeA = cDamageA;
-		damageD_TypeB = cDamageB;
-		ArmorBonus = cArmorBonus;
-		SetStat(determine, str, cStr);
-		strB = str - 10 / 2;
-		SetStat(determine, dex, cDex);
-		dexB = dex - 10 / 2;
-		SetStat(determine, con, cCon);
-		conB = con - 10 / 2;
-		SetStat(determine, wis, cWis);
-		wisB = wis - 10 / 2;
-		SetStat(determine, chari, cChar);
-		chariB = chari - 10 / 2;
+	name = cName;
+	LVL = cLVL;
+	SetHP(determine, cHP);
+	SetAC(determine, cAC);
+	healthD_Type = cHealthD;
+	damageD_TypeA = cDamageA;
+	damageD_TypeB = cDamageB;
+	ArmorBonus = cArmorBonus;
+	SetStat(determine, str, cStr);
+	strB = str - 10 / 2;
+	SetStat(determine, dex, cDex);
+	dexB = dex - 10 / 2;
+	SetStat(determine, con, cCon);
+	conB = con - 10 / 2;
+	SetStat(determine, wis, cWis);
+	wisB = wis - 10 / 2;
+	SetStat(determine, chari, cChar);
+	chariB = chari - 10 / 2;
 }
 
 void Character::SetHP(bool determine, int cHP = 0)
@@ -77,11 +78,13 @@ int Character::RollInitiative()
 	return rand() % 20;
 }
 
-void Character::Damage(int hit, int damage)
+bool Character::Damage(int hit, int damage)
 {
 	if (hit >= AC)
 	{
 		HP -= damage;
+		if (HP <= 0) { return false; }
+		else { return true; }
 	}
 }
 

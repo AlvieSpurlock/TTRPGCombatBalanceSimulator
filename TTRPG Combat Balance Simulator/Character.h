@@ -4,6 +4,7 @@ class Character
 {
 private:
 	//Basic Stats
+	std::string name;
 	int LVL = 1;
 	int HP = 0;
 	int AC = 10;
@@ -24,10 +25,13 @@ private:
 	int chari = 0;
 	int chariB = chari - 10 / 2;
 
-
 public:
+
+	int turn = 0;
+
 	Character()
 	{
+		name = "Character";
 		LVL = 1;
 		HP = 0;
 		AC = 10;
@@ -47,7 +51,7 @@ public:
 		chariB = chari - 10 / 2;
 	}
 
-	Character(bool determine, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus = 0, int cStr, int cDex, int cCon, int cWis, int cChar);
+	Character(bool determine, std::string cName, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus, int cStr, int cDex, int cCon, int cWis, int cChar);
 
 	void SetHP(bool determine, int cHP = 0);
 
@@ -57,7 +61,7 @@ public:
 
 	int RollInitiative();
 
-	void Damage(int hit, int damage);
+	bool Damage(int hit, int damage);
 	void Heal(int healthAdd);
 
 	int RollForAttack();
