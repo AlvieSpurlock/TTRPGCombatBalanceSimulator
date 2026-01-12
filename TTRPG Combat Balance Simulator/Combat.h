@@ -20,5 +20,6 @@ public:
 	void DetermineTurns();
 	void DuplicateCheck(std::vector<Character>& cArray);
 
-	bool BeginCombat();
+	void BeginCombat();
+	bool Turn(std::vector<Character>& cArray);
 };

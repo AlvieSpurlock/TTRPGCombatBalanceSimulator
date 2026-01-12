@@ -59,7 +59,7 @@ void Combat::DetermineTurns()
 	DuplicateCheck(Enemies);
 }
 
-bool Combat::BeginCombat()
+void Combat::BeginCombat()
 {
 	std::vector<Character>& combatOrder = Party;
 	combatOrder.clear();
@@ -75,4 +75,62 @@ bool Combat::BeginCombat()
 	{
 		combatOrder[character.turn] = character;
 	}
+	
+	bool balanced = true;
+
+	while(balanced)
+	{
+		balanced = Turn(combatOrder);
+	}
+
+	if (!balanced)
+	{
+		for (auto& character : Party)
+		{
+			std::string placeHolder = character.GetName() + ": " + std::to_string(character.GetHealth());
+			Console::PrintData(placeHolder);
+		}
+		for (auto& character : Enemies)
+		{
+			std::string placeHolder = character.GetName() + ": " + std::to_string(character.GetHealth());
+			Console::PrintData(placeHolder);
+		}
+	}
+
+}
+
+bool Combat::Turn(std::vector<Character>& cArray)
+{
+	bool isAlive = true;
+	for (auto& characterO : cArray)
+	{
+		for (auto& characterP : Party)
+		{
+			if (characterP.turn == characterO.turn)
+			{
+				int damageIndex = (rand() % Enemies.size()) + 1;
+				Enemies[damageIndex].Damage(characterP.RollForAttack(), characterP.RollForDamage(true));
+				for (auto& character : Enemies)
+				{
+					std::string placeHolder = character.GetName() + ": " + std::to_string(character.GetHealth());
+					Console::PrintData(placeHolder);
+				}
+			}
+		}
+
+		for (auto& characterE : Enemies)
+		{
+			if (characterE.turn == characterO.turn)
+			{
+				int damageIndex = (rand() % Party.size()) + 1;
+				isAlive = Party[damageIndex].Damage(characterE.RollForAttack(), characterE.RollForDamage(true));
+				for (auto& character : Party)
+				{
+					std::string placeHolder = character.GetName() + ": " + std::to_string(character.GetHealth());
+					Console::PrintData(placeHolder);
+				}
+			}
+		}
+	}
+	return isAlive;
 }

@@ -36,7 +36,7 @@ void Character::SetHP(bool determine, int cHP = 0)
 			int baseHealthAdd = 0;
 			for (size_t index = 0; index < LVL; index++)
 			{
-				baseHealthAdd = baseHealthAdd + rand() % 10 + conB;
+				baseHealthAdd = baseHealthAdd + (rand() % healthD_Type) + 1 + conB;
 			}
 			HP = baseHealthAdd;
 		}
@@ -57,7 +57,7 @@ void Character::SetStat(bool determine, int& stat, int cStat)
 		std::vector<int> rolls;
 		for (size_t index = 0; index < 4; index++)
 		{
-			rolls.push_back(rand() % 6);
+			rolls.push_back((rand() % 6) + 1);
 		}
 
 		std::sort(rolls.begin(), rolls.end(), std::greater<int>());
@@ -75,7 +75,7 @@ void Character::SetStat(bool determine, int& stat, int cStat)
 
 int Character::RollInitiative()
 {
-	return rand() % 20;
+	return (rand() % 20) + 1;
 }
 
 bool Character::Damage(int hit, int damage)
@@ -95,11 +95,11 @@ void Character::Heal(int healthAdd)
 
 int Character::RollForAttack()
 {
-	return rand() % 20;
+	return (rand() % 20) + 1;
 }
 int Character::RollForDamage(bool damageType)
 {
-	if (damageType){ return rand() % damageD_TypeA; }
-	else { return rand() % damageD_TypeB; }
+	if (damageType){ return (rand() % damageD_TypeA) + 1; }
+	else { return (rand() % damageD_TypeB) + 1; }
 	
 }

@@ -26,7 +26,6 @@ private:
 	int chariB = chari - 10 / 2;
 
 public:
-
 	int turn = 0;
 
 	Character()
@@ -60,11 +59,13 @@ public:
 	void SetStat(bool determine, int& stat, int cStat);
 
 	int RollInitiative();
-
 	bool Damage(int hit, int damage);
 	void Heal(int healthAdd);
 
 	int RollForAttack();
 	int RollForDamage(bool damageType);
+
+	std::string GetName() { return name; }
+	int GetHealth() { return HP; }
 };
 
