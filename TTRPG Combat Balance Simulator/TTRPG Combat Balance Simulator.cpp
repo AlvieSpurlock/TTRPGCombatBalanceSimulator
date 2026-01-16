@@ -9,8 +9,7 @@ double Sim()
     double wins = 0;
     for (size_t index = 0; index < 1500; index++)
     {
-        if (combat.BeginCombat(false) == 1)
-            wins++;
+        if (combat.BeginCombat(false) == 1) { wins++; }
     } return wins / 1500.0;
 }
 
@@ -28,8 +27,7 @@ double MonteCarlo()
 
         Console::PrintData(
             "Batch Win Rate: " +
-            std::to_string(percent).substr(0, 5) + "%"
-        );
+            std::to_string(percent).substr(0, 5) + "%");
 
         Console::PrintData("------------------------------");
 
@@ -38,7 +36,7 @@ double MonteCarlo()
 
     double total = 0;
     for (auto& avg : avs)
-        total += avg;
+    { total += avg; }
 
     double finalAvg = total / 150.0;
     double finalPercent = finalAvg * 100.0;

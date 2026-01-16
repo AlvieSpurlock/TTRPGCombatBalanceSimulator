@@ -2,11 +2,13 @@
 #include <algorithm>
 #include <iostream>
 
-// Add a character or monster to the appropriate group
 void Combat::AddToGroup(bool isMonster)
 {
-    if (!isMonster) Console::PrintHeader("Character Maker");
-    else           Console::PrintHeader("Monster Maker");
+    if (!isMonster) 
+    { Console::PrintHeader("Character Maker"); }
+   
+    else 
+    { Console::PrintHeader("Monster Maker"); }
 
     int determineComp = 0;
     bool determine = true;
@@ -25,17 +27,20 @@ void Combat::AddToGroup(bool isMonster)
 
     Character placeHolder(determine, isMonster);
 
-    if (!isMonster) Party.push_back(placeHolder);
-    else            Enemies.push_back(placeHolder);
+    if (!isMonster)
+    { Party.push_back(placeHolder); }
+    else { Enemies.push_back(placeHolder); }
 }
 
-// Unified initiative across both Party and Enemies
 void Combat::DetermineTurns()
 {
     std::vector<Character*> all;
 
-    for (auto& c : Party)   all.push_back(&c);
-    for (auto& c : Enemies) all.push_back(&c);
+    for (auto& c : Party) 
+    { all.push_back(&c); }
+    
+    for (auto& c : Enemies) 
+    { all.push_back(&c); }
 
     std::vector<int> used;
 
@@ -43,7 +48,7 @@ void Combat::DetermineTurns()
     {
         int init = c->RollInitiative();
         while (std::find(used.begin(), used.end(), init) != used.end())
-            init = c->RollInitiative();
+        { init = c->RollInitiative(); }
 
         used.push_back(init);
         c->turn = init;
@@ -51,77 +56,67 @@ void Combat::DetermineTurns()
 
     std::sort(all.begin(), all.end(),
         [](const Character* a, const Character* b)
-        {
-            return a->turn > b->turn; // higher goes first
+        {return a->turn > b->turn;
         });
 
     for (int i = 0; i < static_cast<int>(all.size()); ++i)
-        all[i]->turn = i;
+    { all[i]->turn = i; }
 }
 
 bool Combat::AllEnemiesDead()
 {
     for (auto& e : Enemies)
-        if (e.GetHealth() > 0)
-            return false;
+        if (e.GetHealth() > 0) { return false; }
     return true;
 }
 
 bool Combat::AnyPartyDead()
 {
     for (auto& p : Party)
-        if (p.GetHealth() <= 0)
-            return true;
+        if (p.GetHealth() <= 0) { return true; }
     return false;
 }
 
-// Helper: is this Character* in Party?
 bool Combat::IsPartyMember(Character* c)
 {
     for (auto& p : Party)
-        if (&p == c)
-            return true;
+        if (&p == c) { return true; }
     return false;
 }
 
-// Helper: is this Character* in Enemies?
 bool Combat::IsEnemy(Character* c)
 {
     for (auto& e : Enemies)
-        if (&e == c)
-            return true;
+        if (&e == c) { return true; }
     return false;
 }
 
-// Single combat run: 0 = party death, 1 = enemy death
 int Combat::BeginCombat(bool single)
 {
-    // Save HP
     std::vector<int> PartyHealth;
     std::vector<int> EnemyHealth;
 
-    for (auto& c : Party)   PartyHealth.push_back(c.GetHealth());
-    for (auto& c : Enemies) EnemyHealth.push_back(c.GetHealth());
+    for (auto& c : Party) 
+    { PartyHealth.push_back(c.GetHealth()); }
+    for (auto& c : Enemies) 
+    { EnemyHealth.push_back(c.GetHealth()); }
 
-    // Build turn order
     DetermineTurns();
 
     int size = static_cast<int>(Party.size() + Enemies.size());
     std::vector<Character*> combatOrder(size);
 
     for (auto& c : Party)
-        combatOrder[c.turn] = &c;
+    { combatOrder[c.turn] = &c; }
 
     for (auto& c : Enemies)
-        combatOrder[c.turn] = &c;
+    { combatOrder[c.turn] = &c; }
 
     int result = 2;
-    while (result == 2)
-        result = Turn(combatOrder);
+    while (result == 2) { result = Turn(combatOrder); }
 
     if (single)
     {
-        // You only print on unbalanced in your original logic
         if (result == 0)
         {
             for (auto& c : Party)
@@ -131,16 +126,15 @@ int Combat::BeginCombat(bool single)
         }
     }
 
-    // Restore HP
     for (size_t i = 0; i < Party.size(); ++i)
-        Party[i].SetHP_Debug(PartyHealth[i]);
+    { Party[i].SetHP_Debug(PartyHealth[i]); }
+       
     for (size_t i = 0; i < Enemies.size(); ++i)
-        Enemies[i].SetHP_Debug(EnemyHealth[i]);
+    { Enemies[i].SetHP_Debug(EnemyHealth[i]); }
 
     return result;
 }
 
-// Turn loop: 2 = continue, 1 = enemies dead, 0 = party death
 int Combat::Turn(std::vector<Character*>& cArray)
 {
     for (Character* actor : cArray)
@@ -148,13 +142,10 @@ int Combat::Turn(std::vector<Character*>& cArray)
         if (!actor) continue;
         if (actor->GetHealth() <= 0) continue;
 
-        // PARTY ACTOR
         if (IsPartyMember(actor))
         {
-            if (AllEnemiesDead())
-                return 1;
+            if (AllEnemiesDead()) { return 1; }
 
-            // pick a random living enemy
             int idx = -1;
             for (int tries = 0; tries < 10; ++tries)
             {
@@ -170,17 +161,14 @@ int Combat::Turn(std::vector<Character*>& cArray)
 
             Enemies[idx].Damage(
                 actor->RollForAttack(),
-                actor->RollForDamage(true)
-            );
+                actor->RollForDamage(true));
 
-            if (AllEnemiesDead())
-                return 1;
+            if (AllEnemiesDead()) { return 1; }
         }
-        // ENEMY ACTOR
+
         else if (IsEnemy(actor))
         {
-            if (AnyPartyDead())
-                return 0;
+            if (AnyPartyDead()) { return 0; }
 
             int idx = -1;
             for (int tries = 0; tries < 10; ++tries)
@@ -192,16 +180,13 @@ int Combat::Turn(std::vector<Character*>& cArray)
                     break;
                 }
             }
-            if (idx == -1)
-                continue;
+            if (idx == -1) { continue; }
 
             bool alive = Party[idx].Damage(
                 actor->RollForAttack(),
-                actor->RollForDamage(rand() % 2 == 0)
-            );
+                actor->RollForDamage(rand() % 2 == 0));
 
-            if (!alive)
-                return 0;
+            if (!alive) { return 0; }
         }
     }
 
