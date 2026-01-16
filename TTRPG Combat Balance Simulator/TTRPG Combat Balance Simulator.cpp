@@ -44,8 +44,7 @@ double MonteCarlo()
     Console::PrintHeader("Monte Carlo Summary");
     Console::PrintData(
         "Overall Win Chance: " +
-        std::to_string(finalPercent).substr(0, 5) + "%"
-    );
+        std::to_string(finalPercent).substr(0, 5) + "%");
 
     return finalAvg;
 }
