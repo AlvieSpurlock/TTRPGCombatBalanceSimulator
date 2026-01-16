@@ -1,10 +1,21 @@
 #pragma once
 #include <stdlib.h>
+#include <string>
+
+enum Stats
+{
+	Strength,
+	Dex,
+	Con,
+	Wisdom,
+	Charisma
+};
+
 class Character
 {
 private:
 	//Basic Stats
-	std::string name;
+	std::string name = "";
 	int LVL = 1;
 	int HP = 0;
 	int AC = 10;
@@ -24,6 +35,8 @@ private:
 	int wisB = wis - 10 / 2;
 	int chari = 0;
 	int chariB = chari - 10 / 2;
+
+	bool isMonster = false;
 
 public:
 	int turn = 0;
@@ -50,13 +63,15 @@ public:
 		chariB = chari - 10 / 2;
 	}
 
-	Character(bool determine, std::string cName, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus, int cStr, int cDex, int cCon, int cWis, int cChar);
+	Character(bool determine, bool isMonster);
 
-	void SetHP(bool determine, int cHP = 0);
+	void SetHP(bool determine);
 
-	void SetAC(bool determine, int cAC = 0);
+	void SetHP_Debug(int newHP) { HP = newHP; }
 
-	void SetStat(bool determine, int& stat, int cStat);
+	void SetAC(bool determine);
+	bool IsMonster() { return isMonster; }
+	void SetStat(bool determine, int& stat, Stats cStat);
 
 	int RollInitiative();
 	bool Damage(int hit, int damage);
@@ -68,4 +83,3 @@ public:
 	std::string GetName() { return name; }
 	int GetHealth() { return HP; }
 };
-

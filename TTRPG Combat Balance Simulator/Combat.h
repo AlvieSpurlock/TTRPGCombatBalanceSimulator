@@ -16,10 +16,34 @@ private:
 public:
 	Combat(){ Console::enableANSI(); }
 
+    bool CanCombat()
+    {
+        if (Party.empty())
+        {
+            Console::PrintError("No one in Party! Add someone.");
+            return false;
+        }
+
+        if (Enemies.empty())
+        {
+            Console::PrintError("No one to fight! Add someone to fight.");
+            return false;
+        }
+
+        return true;
+    }
+
+
 	void AddToGroup(bool isMonster);
 	void DetermineTurns();
-	void DuplicateCheck(std::vector<Character>& cArray);
-
-	void BeginCombat();
-	bool Turn(std::vector<Character>& cArray);
+    
+    bool AnyPartyDead();
+    
+    bool IsEnemy(Character* c);
+    bool IsPartyMember(Character* c);
+   
+    bool AllEnemiesDead();
+	
+    int BeginCombat(bool single);
+	int Turn(std::vector<Character*>& cArray);
 };

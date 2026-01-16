@@ -1,33 +1,63 @@
+#pragma once
 #include "Character.h"
+#include "Console.h"
+
 #include <vector>
+#include <string>
 #include <algorithm>
 #include <iostream>
 
-Character::Character(bool determine, std::string cName, int cLVL, int cHP, int cAC, int cHealthD, int cDamageA, int cDamageB, int cArmorBonus = 0, int cStr, int cDex, int cCon, int cWis, int cChar)
+Character::Character(bool determine, bool cIsMonster)
 {
-	name = cName;
-	LVL = cLVL;
-	SetHP(determine, cHP);
-	SetAC(determine, cAC);
-	healthD_Type = cHealthD;
-	damageD_TypeA = cDamageA;
-	damageD_TypeB = cDamageB;
-	ArmorBonus = cArmorBonus;
-	SetStat(determine, str, cStr);
-	strB = str - 10 / 2;
-	SetStat(determine, dex, cDex);
-	dexB = dex - 10 / 2;
-	SetStat(determine, con, cCon);
-	conB = con - 10 / 2;
-	SetStat(determine, wis, cWis);
-	wisB = wis - 10 / 2;
-	SetStat(determine, chari, cChar);
-	chariB = chari - 10 / 2;
+	if(cIsMonster)
+	{
+		
+		LVL = Console::iUserInput("Enemy Level");
+		healthD_Type = Console::iUserInput("Health Die");
+		damageD_TypeA = Console::iUserInput("Damage Die - Attack One");
+		damageD_TypeB = Console::iUserInput("Damage Die - Attack One");
+		ArmorBonus = Console::iUserInput("Armor Bonus");
+		SetStat(determine, str, Strength);
+		strB = (str - 10) / 2;
+		SetStat(determine, dex, Dex);
+		dexB = (dex - 10) / 2;
+		SetStat(determine, con, Con);
+		conB = (con - 10) / 2;
+		SetStat(determine, wis, Wisdom);
+		wisB = (wis - 10) / 2;
+		SetStat(determine, chari, Charisma);
+		chariB = (chari - 10) / 2;
+		SetAC(determine);
+		SetHP(determine);
+		name = Console::sUserInput("Enemy Name");
+	}
+	else
+	{
+		LVL = Console::iUserInput("Character Level");
+		healthD_Type = Console::iUserInput("Health Die");
+		damageD_TypeA = Console::iUserInput("Damage Die");
+		ArmorBonus = Console::iUserInput("Armor Bonus");
+		SetStat(determine, str, Strength);
+		strB = (str - 10) / 2;
+		SetStat(determine, dex, Dex);
+		dexB = (dex - 10) / 2;
+		SetStat(determine, con, Con);
+		conB = (con - 10) / 2;
+		SetStat(determine, wis, Wisdom);
+		wisB = (wis - 10) / 2;
+		SetStat(determine, chari, Charisma);
+		chariB = (chari - 10) / 2;
+		SetAC(determine);
+		SetHP(determine);
+		name = Console::sUserInput("Character Name");
+	}
+
+	isMonster = isMonster;
 }
 
-void Character::SetHP(bool determine, int cHP = 0)
+void Character::SetHP(bool determine)
 {
-	if (!determine) { HP = cHP; }
+	if (!determine) { HP = Console::iUserInput("HP"); }
 	else
 	{
 		if (LVL == 1) { HP = healthD_Type + conB; }
@@ -43,15 +73,36 @@ void Character::SetHP(bool determine, int cHP = 0)
 	}
 }
 
-void Character::SetAC(bool determine, int cAC = 0)
+void Character::SetAC(bool determine)
 {
-	if (!determine) { AC = cAC; }
+	if (!determine) { AC = Console::iUserInput("AC"); }
 	else { AC = AC + dexB + ArmorBonus; }
 }
 
-void Character::SetStat(bool determine, int& stat, int cStat)
+void Character::SetStat(bool determine, int& stat, Stats cStat)
 {
-	if (!determine) { stat = cStat; }
+	if (!determine) 
+	{ 
+		switch(cStat)
+		{
+		case Strength:
+			stat = Console::iUserInput("Strength");
+			break;
+		case Dex:
+			stat = Console::iUserInput("Dexterity");
+			break;
+		case Con:
+			stat = Console::iUserInput("Constitution");
+			break;
+		case Wisdom:
+			stat = Console::iUserInput("Wisdom");
+			break;
+		case Charisma:
+			stat = Console::iUserInput("Charisma");
+			break;
+		}
+		
+	}
 	else
 	{
 		std::vector<int> rolls;
@@ -63,7 +114,7 @@ void Character::SetStat(bool determine, int& stat, int cStat)
 		std::sort(rolls.begin(), rolls.end(), std::greater<int>());
 		rolls.pop_back();
 
-		int placeHolder;
+		int placeHolder = 0;
 
 		for (size_t index = 0; index < 3; index++)
 		{
@@ -83,9 +134,10 @@ bool Character::Damage(int hit, int damage)
 	if (hit >= AC)
 	{
 		HP -= damage;
-		if (HP <= 0) { return false; }
+		if (HP <= 0) { HP = 0; return false; }
 		else { return true; }
 	}
+	else { return true; }
 }
 
 void Character::Heal(int healthAdd)

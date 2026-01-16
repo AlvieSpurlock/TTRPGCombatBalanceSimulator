@@ -52,6 +52,12 @@ public:
         std::cout << data << "\n";
     }
 
+    static void PrintError(std::string data)
+    {
+        SetError();
+        std::cout << data << "\n";
+    }
+
     static int iUserInput(std::string data)
     {
         SetQuestion();
